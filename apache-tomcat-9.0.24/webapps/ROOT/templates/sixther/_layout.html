@@ -18,34 +18,22 @@
             <a class="navbar-brand" href="/">
                 <img src="#option('calmlog_logo','img/logo.jpg')" height="80" alt="">
             </a>
-            <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">-->
-                <!--<span class="navbar-toggler-icon"></span>-->
-            <!--</button>-->
-            <!--<div class="collapse navbar-collapse justify-content-end" id="navbarNav">-->
-                <ul class="navbar-nav">
-
-                    #for(menu : MENUS)
+            <ul class="navbar-nav">
+                #for(menu : MENUS)
                     <li class="nav-item #(menu.isActive ? 'active' : '')">
                         <a class="nav-link" href="#(menu.url)">#(menu.text) <span class="sr-only">(current)</span></a>
                     </li>
-                    #end
-                </ul>
-            <!--</div>-->
+                #end
+            </ul>
     </div>
 </div>
 
-<div class="cl-cantainer container">
-    <div class="row">
-
+<div class="cl-container container">
         #@content()
-
-    </div>
-
 </div>
-
 <div class="container-fluid cl-footer">
     <div class="container">
-        #(WEB_COPYRIGHT ? WEB_COPYRIGHT : '本设计由简.工作室荣誉出品 <br /> copyright @ 2017~2018 简.工作室（www.jeanstudio.cn）')
+        <span>Copyright © 2019.Onesbook All rights reserved. </span>
     </div>
 </div>
 <script src="jquery/jquery.min.js"></script>
