@@ -18,7 +18,17 @@ a:hover{
     color: #00bcd4;
     text-decoration: none;
 }
-/*header*/
+
+a img {
+    transition: .3s;
+}
+a:hover img {
+    opacity: 0.95;
+}
+
+/* ============== */
+/* toobar样式开始  */
+/* ============== */
 .cl-header {
     background-color: #fff;
     /*height: 80px;*/
@@ -28,8 +38,8 @@ a:hover{
 .header-content{
     position: relative;
     max-width: 1140px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 60px;
+    padding-right: 60px;
     margin-left: auto;
     margin-right: auto;
     height: 80px;
@@ -54,21 +64,25 @@ a:hover{
     float: left;
     margin-right: 30px;
 }
+/* ============== */
+/* toobar样式结束  */
+/* ============== */
 
-/*toobar样式结束*/
 
-/* 主页面样式开始*/
+/* ============== */
+/* 主页面样式开始   */
+/* ============== */
 .cl-container{
     min-height: 80vh;
+    margin-top: 50px;
+    max-width: 1140px;
+    padding-left: 60px;
+    padding-right: 60px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cl-article-box {
-    margin-top: 50px;
-    max-width: 1140px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-left: auto;
-    margin-right: auto;
     display: grid;
     grid-gap: 20px;
     grid-template-columns: 23% 23% 23% 23%;
@@ -87,11 +101,11 @@ a:hover{
     height: 3rem;
 }
 
-.cl-article {
+.cl-article-box-item {
     /*overflow:hidden;*/
 }
 
-.cl-article img {
+.cl-article-box-item img {
     width: 100%;
     height: auto;
     border-radius: 5px;
@@ -116,17 +130,14 @@ a:hover{
     position: absolute;
     right: 5px;
 }
-/* 主页面样式结束 */
+/* ============== */
+/* 主页面样式结束   */
+/* ============== */
 
-
-/* 文章页面样式开始*/
+/* ============== */
+/* 文章页面样式开始 */
+/* ============== */
 .cl-article-page-wrapper {
-    max-width: 1140px;
-    padding-left: 20px;
-    padding-right: 20px;
-    margin-right: auto;
-    margin-left: auto;
-    margin-top: 30px;
     display: flex;
 }
 
@@ -206,8 +217,9 @@ a:hover{
 }
 
 .cl-rightbar {
-    width: 280px;
-    margin-left: 40px;
+    margin-top: 50px;
+    width: 400px;
+    margin-left: 50px;
     overflow: hidden;
 }
 
@@ -217,10 +229,108 @@ a:hover{
     margin-top: 25px;
     margin-bottom: 50px;
 }
+
+/* 下面是文章正文样式 */
+.cl-artical p {
+    line-height: 1.8;
+}
+
+.cl-artical img {
+    width: 100%;
+    height: auto;
+}
+
+.cl-artical hr {
+    background-color: #dee2e6;
+    height: 1px;
+    border: none;
+}
+
+.cl-artical blockquote:before {
+    content:"\f10d";
+    font-family: 'FontAwesome';
+    font-size: 1.5em;
+    display: inline-block;
+    color: #bfbfbf;
+}
+
+.cl-artical blockquote:after {
+    content:"\f10e";
+    font-family: 'FontAwesome';
+    font-size: 1.5em;
+    color: #bfbfbf;
+    display: inline-block;
+}
+
+.cl-artical blockquote p {
+    display: inline-block;
+    margin: 15px 10px;
+}
+
+.cl-artical h1 {
+    border-left: 3px solid #00bcd4;
+    padding-left: 10px;
+}
+
+.cl-artical a {
+    color: #00bcd4;
+    text-decoration:underline;
+    font-size: 1rem;
+}
+
+.cl-artical ol {
+    line-height: 2;
+}
+
+.cl-artical ul {
+    line-height: 2;
+}
+
+.cl-artical p span {
+    display: inline-block;
+    border-radius: 5px;
+    padding: 0 5px;
+    margin: 0 5px;
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+.cl-artical table {
+    border: solid rgba(0, 0, 0, 0.3);
+    border-width:1.5px 0px 0px 1.5px;;
+    width: 100% !important;
+    border-collapse: collapse;
+}
+.cl-artical table td {
+    border:solid rgba(0, 0, 0, 0.3);
+    border-width:0px 1.5px 1.5px 0px;
+    padding: 8px 5px;
+}
+
+.cl-artical table th {
+    border:solid rgba(0, 0, 0, 0.3);
+    border-width:0px 1.5px 1.5px 0px;
+    padding: 8px 5px;
+    background-color: #00bcd4;
+}
+
+.cl-artical .hljs {
+    border-radius: 10px;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    white-space: pre-wrap;
+    overflow-x: hidden;
+
+}
+
+/* ============== */
 /* 文章页面样式结束 */
+/* ============== */
 
 
-/* footer样式开始 */
+/* ============== */
+/* footbar样式开始 */
+/* ============== */
 .cl-footer{
     background-color: #fbfbfb;
     text-align: center;
@@ -240,7 +350,11 @@ a:hover{
     line-height:0.8em;
 }
 
-/* footer样式结束 */
+/* ============== */
+/* footbar样式结束 */
+/* ============== */
+
+
 /*.b {*/
     /*background-color: #0E9A00;*/
     /*height: 200px;*/
