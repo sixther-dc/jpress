@@ -2,30 +2,81 @@
 #@mylaout()
 
 #define script()
-<script src="/static/components/jquery/jquery.form.min.js"></script>
 <script>
-    $('#commentForm').on('submit', function () {
-        $(this).ajaxSubmit({
-            type: "post",
-            success: function (data) {
-                if (data.state == "ok") {
-                    location.href = location.href.indexOf("#allComment") > 0 ?
-                        location.href :
-                        location.href+"#allComment";
-                    location.reload()
-                } else {
-                    alert('评论失败：' + data.message);
-                    if (data.errorCode == 9) {
-                        location.href = '#(CPATH)/user/login';
-                    }
-                }
-                $('#content').val('');
-            },
-            error: function () {
-                alert("网络错误，请稍后重试");
+    //处理评论框的placeholder
+    var clCommentText = document.querySelector(".cl-textedit");
+    var clReplyButtom = document.querySelectorAll(".cl-comment-reply");
+    clCommentText.oninput = function () {
+        var clCommentValue = this.innerHTML;
+        if (clCommentValue) {
+            this.classList.add('cl-textplaceholder');
+        } else {
+            this.classList.remove('cl-textplaceholder');
+        }
+    }
+
+    //评论处@其他用户
+    for(i=0; i<clReplyButtom.length; i++) {
+        (function (x) {
+            var commentPanelContent = clReplyButtom[x].parentNode.parentNode;
+            var atUser = commentPanelContent.children[1].children[0].innerHTML;
+            var commentContent = commentPanelContent.children[0].getAttribute("value");
+            commentPanelContent.children[0].innerHTML = commentContent;
+            clReplyButtom[x].onclick = function () {
+                clCommentText.innerHTML += "<span>@" + atUser + "</span>&nbsp;&nbsp";
+                clCommentText.classList.add('cl-textplaceholder');
             }
-        });
-        return false;
+        })(i)
+    }
+    //提交评论
+    $('#commentSubmit').on('click', function () {
+        $.ajax({
+            url: "#(CPATH)/article/postComment",
+            type: 'POST',
+            data: {
+                articleId: $("[name='articleId']")[0].value,
+                pid: $("[name='pid']")[0].value,
+                content: clCommentText.innerHTML
+            },
+            success: function(result) {
+                if(result.state == "ok") {
+                    var firstCommentNode = document.querySelector(".comment-panel");
+                    var newCommentNode = firstCommentNode.cloneNode(true);
+                    newCommentNode.querySelector(".comment-panel-content-main").innerHTML = result.comment.text;
+                    newCommentNode.querySelector(".cl-comment-date").querySelector("span").innerHTML = result.comment.created;
+                    newCommentNode.querySelector(".cl-comment-author").innerHTML = result.comment.author;
+                    newCommentNode.querySelector("img").src = result.user.avatar;
+                    firstCommentNode.before(newCommentNode);
+                    clCommentText.innerHTML = '';
+                    clCommentText.classList.remove('cl-textplaceholder');
+
+                } else {
+
+                }
+
+            }
+        })
+        // $(this).ajaxSubmit({
+        //     type: "post",
+        //     success: function (data) {
+        //         if (data.state == "ok") {
+        //             location.href = location.href.indexOf("#allComment") > 0 ?
+        //                 location.href :
+        //                 location.href+"#allComment";
+        //             location.reload()
+        //         } else {
+        //             alert('评论失败：' + data.message);
+        //             if (data.errorCode == 9) {
+        //                 location.href = '#(CPATH)/user/login';
+        //             }
+        //         }
+        //         $('#content').val('');
+        //     },
+        //     error: function () {
+        //         alert("网络错误，请稍后重试");
+        //     }
+        // });
+        // return false;
     });
 </script>
 #end
@@ -37,7 +88,10 @@
             <a  class="cl-text" href="/">首页</a> <i class="cl-text fa fa-caret-right" aria-hidden="true"></i>
             #articleCategories(article.id,"category")
                 #for(category : categories)
-                <a class="cl-text" href="#(category.url ??)">#(category.title ??)</a> <i class="cl-text fa fa-caret-right" aria-hidden="true"></i>
+                    <a class="cl-text" href="#(category.url ??)">#(category.title ??)</a> <i class="cl-text fa fa-caret-right" aria-hidden="true"></i>
+                    #if(for.last)
+                        #set(lastCategory = category.title ??)
+                    #end
                 #end
             #end
             <span class="cl-text cl-artical-name">Nginx 上部署 TLS1.3、Brotli、ECC双证书实践</span>
@@ -46,14 +100,17 @@
             <h2>#(article.title)</h2>
         </div>
         <div class="cl-artical-meta">
-            <img src=#(USER.avatar) alt="">
+            <img src=#(article.user.avatar) alt="">
             <div class="cl-artical-author-info">
                 <div class="cl-artical-author">
-                    <span>sixther</span>
+                    <span>#(article.user.realname)</span>
                 </div>
                 <div class="cl-artical-date">
                     <span>9月前 发布在</span>
-                    <span>HTTPS</span>
+                    #set(x=123)
+                    <span>
+                        #(lastCategory)
+                    </span>
                 </div>
             </div>
             <div class="cl-artical-comment-view">
@@ -91,14 +148,23 @@
         </div>
     </div>
         #end
+
+        <div class="cl-article-line"></div>
+        <div class="comment-title">
+            <span>评论</span>
+        </div>
         <div class="comment" id="allComment">
-
-
-        <form class="cl-comment-from" action="#(CPATH)/article/postComment" id="commentForm" method="post">
             <input type="hidden" name="articleId" value="#(article.id)">
             <input type="hidden" name="pid" id="pid">
 
-            <div class="cl-textarea"><textarea placeholder="说点什么吧..." rows="3" name="content"></textarea></div>
+            <div class="cl-textarea">
+                <div class="cl-textedit" spellcheck="false" contenteditable="true" placeholder="在此输入评论内容..."></div>
+                <div class="cl-texttool">
+                    <span>
+                        <i id="commentSubmit" class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
 
             <div class="comment-vcode">
                 #if(option('article_comment_vcode_enable'))
@@ -106,59 +172,44 @@
                 <img class="vcode-img" src="/commons/captcha" onclick="this.src='#(CPATH)/commons/captcha?d='+Math.random();">
                 #end
             </div>
-            <button type="submit" >留言</button>
-            <span class="clearfix"></span>
-        </form>
-
-
-        <h4 class="right-card-title" >全部评论</h4>
-
-        #commentPage()
-        #for(comment : commentPage.list)
-        <div class="comment-panel">
-            <div class="comment-panel-portrait">
-                <img src="img/portrait.png" class="img-fluid rounded-circle" alt="">
-            </div>
-            <div class="comment-panel-content">
-                <div class="comment-panel-content-item">
-                    <div class="comment-author">#(comment.author)</div>
-                    <div>#(comment.created )</div>
+            #commentPage()
+            #for(comment : commentPage.list)
+            <div class="comment-panel">
+                <div class="comment-panel-portrait">
+                    <img src="#(article.user.avatar)" alt="">
+                    <!--<img src="img/portrait.png" class="img-fluid rounded-circle" alt="">-->
                 </div>
-                <div class="comment-panel-content-main">#(comment.content)</div>
-                #if(comment.parent)
-                <div class="comment-secondary-panel">
-                    <span class="triangle-icon"><i class="fa fa-sort-asc" aria-hidden="true"></i></span>
-                    <div class="comment-panel-content">
-                        <div class="comment-panel-content-item">
-                            <div class="comment-author">#(comment.parent.author)</div>
-                            <div>#(comment.parent.created)</div>
-                        </div>
-                        <div class="comment-panel-content-main">#(comment.parent.content)</div>
+                <div class="comment-panel-content">
+                    <div class="comment-panel-content-main" value="#(comment.content)">
+                        <!--#(comment.content)-->
                     </div>
-                    <span class="clearfix"></span>
+                    <div class="comment-panel-content-item">
+                        <span class="cl-comment-author">#(comment.author)</span>
+                        <span class="cl-comment-date">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            <span>#(comment.created )</span>
+                        </span>
+                        <span class="cl-comment-reply">
+                            <i class="fa fa-reply" aria-hidden="true"></i>
+                            <span>回复</span>
+                        </span>
+                    </div>
                 </div>
-                #end
             </div>
-            <span class="clearfix"></span>
-            <div class="text-primary"><a href="">回复</a></div>
+            #end
+            #end
+
+
+            <!--#commentPaginate(anchor="allComment")-->
+            <!--<nav aria-label="Page navigation example">-->
+                <!--<ul class="pagination justify-content-center ">-->
+                    <!--#for(page : pages)-->
+                    <!--<li class="page-item #(page.style)"><a class="page-link" href="#(page.url ??)">#(page.text)</a></li>-->
+                    <!--#end-->
+                <!--</ul>-->
+            <!--</nav>-->
+            <!--#end-->
         </div>
-        #end
-        #end
-
-
-        #commentPaginate(anchor="allComment")
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center ">
-                #for(page : pages)
-                <li class="page-item #(page.style)"><a class="page-link" href="#(page.url ??)">#(page.text)</a></li>
-                #end
-            </ul>
-        </nav>
-        #end
-
-
-
-    </div>
     </div>
 
     <div class="cl-rightbar">
