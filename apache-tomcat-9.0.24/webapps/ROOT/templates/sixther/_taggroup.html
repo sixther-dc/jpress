@@ -1,0 +1,33 @@
+<style>
+    .cl-right-card-taggroup ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .cl-right-card-taggroup ul li {
+        display: inline-block;
+        background-color: #00bcd4;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        padding: 3px 5px;
+    }
+
+    .cl-right-card-taggroup ul li a {
+        color: #fff;
+        font-size: 0.875rem;
+    }
+
+    .cl-right-card-taggroup ul li a span {
+        color: #f4e0bd;
+    }
+</style>
+<ul class="label">
+    #tags()
+    #for(tag : tags)
+    <li><a href="#(tag.url)">
+        #(tag.title)
+        <span>(#(tag.count))</span>
+    </a></li>
+    #end
+    #end
+</ul>

@@ -1,51 +1,28 @@
-<div class="right-card">
-
-    <div class="right-card-main">
-        <div class="right-card-title">个人微信号</div>
-        <div class="cl-code">
-            <img src="#option('calmlog_qrcode','img/code.jpg')" class="img-fluid" alt="">
-            <p>#option('calmlog_qrcode_text')</p>
+<div class="cl-right-card">
+    <div class="cl-right-card-name">
+        <span>惜时</span>
+    </div>
+    <div class="cl-right-card-content">
+        <div class="cl-right-card-save-time">
+            #include("_calendar.html")
         </div>
-
     </div>
 </div>
 
-<div class="right-card">
-
-    <div class="right-card-main">
-        <div class="right-card-title">最新文章</div>
-        <div class="right-recommended">
-            <a href="#">
-                <img src="#option('calmlog_ad','img/list-right.jpg')" class="img-fluid" alt="">
-            </a>
-        </div>
-        <ul class="right-recommended-list">
-            #articles()
-            #for(article : articles)
-            <li>
-                <a href="#(article.url)">
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    #(article.title ??)
-                </a>
-            </li>
-            #end
-            #end
-
-        </ul>
+<div class="cl-right-card">
+    <div class="cl-right-card-name">
+        <span>标签</span>
+    </div>
+    <div class="cl-right-card-taggroup">
+        #include("_taggroup.html")
     </div>
 </div>
 
-
-<div class="right-card">
-
-    <div class="right-card-main">
-        <div class="right-card-title">热门标签</div>
-        <ul class="label">
-            #tags()
-            #for(tag : tags)
-            <li><a href="#(tag.url)">#(tag.title)</a></li>
-            #end
-            #end
-        </ul>
+<div class="cl-right-card" id="cl-right-card-catalog">
+    <div class="cl-right-card-name">
+        <span>文章目录</span>
+    </div>
+    <div class="cl-right-card-catalog">
+        #include("_catalog.html")
     </div>
 </div>
