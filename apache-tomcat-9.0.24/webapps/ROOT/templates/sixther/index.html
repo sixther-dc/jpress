@@ -9,22 +9,35 @@
         #articlePage()
         #for(article : articlePage.list)
         <div class="cl-article-box-item">
-            <a href="#(article.url)">
+            <a class="cl-artical-img" href="#(article.url)">
                 <img src="#(article.thumbnail ?? 'img/default-img.jpg')" alt="">
-                <div class="cl-article-card-title">
-                    #(article.title)
-                </div>
             </a>
             <div class="cl-article-brief-info">
-                <span class="cl-article-date">
-                    1天前
-                </span>
+                <div class="cl-article-card-title">
+                    <a href="#(article.url)"><span>#(article.title)</span></a>
+                </div>
 
-                <span class="cl-article-view-num">
-                    <i class="fa fa-eye" aria-hidden="true"></i> #(article.view_count)
-                </span>
+                <div class="cl-article-card-abstract">
+                    <span>#maxLength(article.text,150)</span>
+                </div>
+
+                <div class="cl-article-metadata">
+                    <div class="cl-article-metadata-left">
+                        <span>1天前</span>
+                        <span>#(article.user.username)</span>
+                    </div>
+                    <div class="cl-article-metadata-right">
+                        <span>
+                            <i class="fa fa-commenting-o" aria-hidden="true"></i> #(article.comment_count)
+                        </span>
+                        <span>
+                        <i class="fa fa-eye" aria-hidden="true"></i> #(article.view_count)
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="cl-article-line"></div>
         #end
         #end
     </div>
