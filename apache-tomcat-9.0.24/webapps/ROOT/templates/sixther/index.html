@@ -1,7 +1,6 @@
 #include("./_layout.html")
 #@mylaout()
 
-
 #define content()
 <div class="cl-index-page-wrapper">
     <div class="cl-artical-content">
@@ -16,15 +15,26 @@
                 <div class="cl-article-card-title">
                     <a href="#(article.url)"><span>#(article.title)</span></a>
                 </div>
-
+                <div class="cl-article-tag-list">
+                    #articleCategories(article.id,"tag")
+                    #for(category : categories)
+                    <a href="#(category.url ??)">#(category.title ??)</a>
+                    #end
+                    #end
+                </div>
                 <div class="cl-article-card-abstract">
                     <span>#maxLength(article.text,150)</span>
                 </div>
-
                 <div class="cl-article-metadata">
                     <div class="cl-article-metadata-left">
-                        <span>1天前</span>
-                        <span>#(article.user.username)</span>
+                        <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <span>
+                            <script>
+                                document.write(transfromTime("#(article.created)"));
+                            </script>
+                        </span>
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        <span>#(article.user.nickname)</span>
                     </div>
                     <div class="cl-article-metadata-right">
                         <span>

@@ -8,10 +8,52 @@
     <title>#(SEO_TITLE ?? (WEB_TITLE + '-' + WEB_SUBTITLE))</title>
     <meta name="keywords" content="#(SEO_KEYWORDS)">
     <meta name="description" content="#(SEO_DESCRIPTION)">
+    <link rel="shortcut icon" href="img/favicon.ico" />
     <link href="css/cl-css.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="highlight/styles/railscasts.css">
 </head>
+
+<script>
+    function transfromTime(time) {
+        var timeStamp = new Date(time);
+        var nowStamp = new Date().getTime();
+
+        var second = Math.floor((nowStamp - timeStamp) / 1000);
+        var minute = Math.floor(second / 60);
+        var hour = Math.floor(minute / 60);
+        var day = Math.floor(hour / 24);
+        var month = Math.floor(day / 31);
+        var year = Math.floor(day / 365);
+
+        if (year > 0) {
+            return year + "年前";
+        } else if (month > 0) {
+            return month + "月前"
+        } else if (day > 0){
+            if (day >=7 && day < 14) {
+                return "1周前"
+            } else if (day >=14 && day < 21) {
+                return "2周前"
+            } else if (day >=21 && day < 28) {
+                return "3周前"
+            } else if (day >=28 && day < 21) {
+                return "4周前"
+            } else {
+                return day + "天前"
+            }
+        } else if (hour > 0) {
+            return hour + "小时前"
+        } else if (minute > 0) {
+            return minute + "分钟前"
+        } else if (second > 0) {
+            return second + "秒前"
+        } else {
+            return "刚刚"
+        }
+    }
+</script>
+
 <body>
 <div class="cl-header container-fluid">
     <div class="header-content container">

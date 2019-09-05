@@ -3,8 +3,31 @@
 
 #define script()
 <script>
+    //定义匿名评论用户列表
+    var anonymousList = [
+        {
+            name: "公孙离",
+            avatar: "../templates/sixther/img/anon_user0.jpg"
+        },
+        {
+            name: "百里玄策",
+            avatar: "../templates/sixther/img/anon_user0.jpg"
+        },
+        {
+            name: "苏烈",
+            avatar: "../templates/sixther/img/anon_user0.jpg"
+        },
+        {
+            name: "凯",
+            avatar: "../templates/sixther/img/anon_user0.jpg"
+        },
+        {
+            name: "杨玉环",
+            avatar: "../templates/sixther/img/anon_user0.jpg"
+        }
+    ]
 
-    document.execCommand("defaultParagraphSeparator", false, "div");
+    var isLoginUserFlag = (document.cookie.indexOf("_jpuid") > -1);
     //处理评论框的placeholder
     var clCommentText = document.querySelector(".cl-textedit");
     var clReplyButtom = document.querySelectorAll(".cl-comment-reply");
@@ -20,35 +43,51 @@
     //评论处@其他用户
     for(i=0; i<clReplyButtom.length; i++) {
         (function (x) {
-            var commentPanelContent = clReplyButtom[x].parentNode.parentNode;
-            var atUser = commentPanelContent.children[1].children[0].innerHTML;
-            var commentContent = commentPanelContent.children[0].getAttribute("value");
-            commentPanelContent.children[0].innerHTML = commentContent;
+            var commentPanelContent = clReplyButtom[x].parentNode.parentNode.parentNode;
+            window.aa = commentPanelContent;
+            var atUser = commentPanelContent.children[1].children[1].children[0].innerHTML;
+            var commentContent = commentPanelContent.getAttribute("value");
+            var userId = commentPanelContent.getAttribute("userid");
+            //当时一条匿名评论时
+            if (userId == '') {
+                var anonUserIndex = parseInt(commentContent[0]);
+                commentContent = commentContent.substr(1, commentContent.length - 1);
+                atUser = anonymousList[anonUserIndex].name;
+                var userAvatar =  anonymousList[anonUserIndex].avatar;
+                commentPanelContent.children[0].children[0].src = userAvatar;
+                commentPanelContent.children[1].children[1].children[0].innerHTML = atUser;
+            }
+            commentPanelContent.children[1].children[0].innerHTML = commentContent;
             clReplyButtom[x].onclick = function () {
-                clCommentText.innerHTML += "<span>@" + atUser + "</span>";
+                clCommentText.innerHTML += "<span>@" + atUser + "</span>&nbsp";
                 clCommentText.classList.add('cl-textplaceholder');
             }
         })(i)
     }
     //提交评论
     $('#commentSubmit').on('click', function () {
+        //随机一个匿名用户的id
+        var anonUserIndex = Math.floor(Math.random() * 5);
+        console.log(anonUserIndex);
         $.ajax({
             url: "#(CPATH)/article/postComment",
             type: 'POST',
             data: {
                 articleId: $("[name='articleId']")[0].value,
                 pid: $("[name='pid']")[0].value,
-                content: clCommentText.innerHTML
+                content: isLoginUserFlag ? clCommentText.innerHTML : anonUserIndex + clCommentText.innerHTML
             },
             success: function(result) {
                 if(result.state == "ok") {
-                    console.log("test");
+                    var commentText = isLoginUserFlag ? result.comment.text : result.comment.text.substr(1, result.comment.text.length - 1);
+                    var commentAuthor = isLoginUserFlag ? result.comment.author : anonymousList[parseInt(result.comment.text[0])].name;
+                    var commentAvatar = isLoginUserFlag? result.user.avatar: anonymousList[parseInt(result.comment.text[0])].avatar;
                     var firstCommentNode = document.querySelector(".comment-panel");
                     var newCommentNode = firstCommentNode.cloneNode(true);
-                    newCommentNode.querySelector(".comment-panel-content-main").innerHTML = result.comment.text;
-                    newCommentNode.querySelector(".cl-comment-date").querySelector("span").innerHTML = result.comment.created;
-                    newCommentNode.querySelector(".cl-comment-author").innerHTML = result.comment.author;
-                    newCommentNode.querySelector("img").src = result.user.avatar;
+                    newCommentNode.querySelector(".comment-panel-content-main").innerHTML = commentText;
+                    newCommentNode.querySelector(".cl-comment-date").querySelector("span").innerHTML = transfromTime(result.comment.created);
+                    newCommentNode.querySelector(".cl-comment-author").innerHTML = commentAuthor;
+                    newCommentNode.querySelector("img").src = commentAvatar;
                     firstCommentNode.before(newCommentNode);
                     clCommentText.innerHTML = '';
                     clCommentText.classList.remove('cl-textplaceholder');
@@ -85,11 +124,14 @@
             <img src=#(article.user.avatar) alt="">
             <div class="cl-artical-author-info">
                 <div class="cl-artical-author">
-                    <span>#(article.user.realname)</span>
+                    <span>#(article.user.nickname)</span>
                 </div>
                 <div class="cl-artical-date">
-                    <span>9月前 发布在</span>
-                    #set(x=123)
+                    <span>
+                        <script>
+                            document.write(transfromTime("#(article.created)"));
+                        </script>
+                    </span> 发布在
                     <span>
                         #(lastCategory)
                     </span>
@@ -108,28 +150,28 @@
         </div>
 
 
-        #relevantArticles(article)
-        <div class="recommend-panel">
-        <h4 class="right-card-title">相关文章</h4>
-        <div class="card-deck">
+        <!--#relevantArticles(article)-->
+        <!--<div class="recommend-panel">-->
+        <!--<h4 class="right-card-title">相关文章</h4>-->
+        <!--<div class="card-deck">-->
 
-            #for(article :relevantArticles )
-            <div class="card ll-panel">
-                <a class="recommend-panel-link" href="#(article.url ??)">
-                    <div class="recommend-panel-top">
-                        <img src="#(article.showImage ?? 'temporary-img/list-image1.jpg')" class="img-fluid"
-                             alt="#(article.title ??)">
-                    </div>
-                    <div class="recommend-panel-bottom">
-                        #(article.title ??)
-                    </div>
-                </a>
-            </div>
-            #end
+            <!--#for(article :relevantArticles )-->
+            <!--<div class="card ll-panel">-->
+                <!--<a class="recommend-panel-link" href="#(article.url ??)">-->
+                    <!--<div class="recommend-panel-top">-->
+                        <!--<img src="#(article.showImage ?? 'temporary-img/list-image1.jpg')" class="img-fluid"-->
+                             <!--alt="#(article.title ??)">-->
+                    <!--</div>-->
+                    <!--<div class="recommend-panel-bottom">-->
+                        <!--#(article.title ??)-->
+                    <!--</div>-->
+                <!--</a>-->
+            <!--</div>-->
+            <!--#end-->
 
-        </div>
-    </div>
-        #end
+        <!--</div>-->
+    <!--</div>-->
+        <!--#end-->
 
         <div class="cl-article-line"></div>
         <div class="comment-title">
@@ -156,20 +198,27 @@
             </div>
             #commentPage()
             #for(comment : commentPage.list)
-            <div class="comment-panel">
+            <div class="comment-panel"  value="#(comment.content)" userid="#(comment.user_id)">
                 <div class="comment-panel-portrait">
-                    <img src="#(article.user.avatar)" alt="">
+                    <img src="#(comment.user.avatar ?? )" alt="">
                     <!--<img src="img/portrait.png" class="img-fluid rounded-circle" alt="">-->
                 </div>
                 <div class="comment-panel-content">
-                    <div class="comment-panel-content-main" value="#(comment.content)">
+                    <div class="comment-panel-content-main">
                         <!--#(comment.content)-->
                     </div>
                     <div class="comment-panel-content-item">
                         <span class="cl-comment-author">#(comment.author)</span>
+                        #if(comment.author == article.user.nickname)
+                            <span class="cl-comment-author-self">作者</span>
+                        #end
                         <span class="cl-comment-date">
                             <i class="fa fa-clock-o" aria-hidden="true"></i>
-                            <span>#(comment.created )</span>
+                            <span>
+                                <script>
+                                    document.write(transfromTime("#(comment.created)"));
+                                </script>
+                            </span>
                         </span>
                         <span class="cl-comment-reply">
                             <i class="fa fa-reply" aria-hidden="true"></i>
@@ -180,7 +229,6 @@
             </div>
             #end
             #end
-
 
             <!--#commentPaginate(anchor="allComment")-->
             <!--<nav aria-label="Page navigation example">-->

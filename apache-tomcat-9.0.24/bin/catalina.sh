@@ -246,6 +246,8 @@ fi
 if [ -z "$JSSE_OPTS" ] ; then
   JSSE_OPTS="-Djdk.tls.ephemeralDHKeySize=2048"
 fi
+
+JAVA_OPTS="$JAVA_OPTS -Duser.timezone=Asia/shanghai"
 JAVA_OPTS="$JAVA_OPTS $JSSE_OPTS"
 
 # Register custom URL handlers
