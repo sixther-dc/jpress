@@ -11,19 +11,19 @@
         },
         {
             name: "百里玄策",
-            avatar: "../templates/sixther/img/anon_user0.jpg"
+            avatar: "../templates/sixther/img/anon_user1.jpg"
         },
         {
             name: "苏烈",
-            avatar: "../templates/sixther/img/anon_user0.jpg"
+            avatar: "../templates/sixther/img/anon_user2.jpg"
         },
         {
             name: "凯",
-            avatar: "../templates/sixther/img/anon_user0.jpg"
+            avatar: "../templates/sixther/img/anon_user3.jpg"
         },
         {
             name: "杨玉环",
-            avatar: "../templates/sixther/img/anon_user0.jpg"
+            avatar: "../templates/sixther/img/anon_user4.jpg"
         }
     ]
 
@@ -68,7 +68,6 @@
     $('#commentSubmit').on('click', function () {
         //随机一个匿名用户的id
         var anonUserIndex = Math.floor(Math.random() * 5);
-        console.log(anonUserIndex);
         $.ajax({
             url: "#(CPATH)/article/postComment",
             type: 'POST',
@@ -83,11 +82,16 @@
                     var commentAuthor = isLoginUserFlag ? result.comment.author : anonymousList[parseInt(result.comment.text[0])].name;
                     var commentAvatar = isLoginUserFlag? result.user.avatar: anonymousList[parseInt(result.comment.text[0])].avatar;
                     var firstCommentNode = document.querySelector(".comment-panel");
-                    var newCommentNode = firstCommentNode.cloneNode(true);
+                    var newCommentNode = document.querySelector("#commentTemplate").cloneNode(true);
+                    newCommentNode.style.display = "flex";
+                    newCommentNode.setAttribute("id", "");
                     newCommentNode.querySelector(".comment-panel-content-main").innerHTML = commentText;
                     newCommentNode.querySelector(".cl-comment-date").querySelector("span").innerHTML = transfromTime(result.comment.created);
                     newCommentNode.querySelector(".cl-comment-author").innerHTML = commentAuthor;
                     newCommentNode.querySelector("img").src = commentAvatar;
+                    if (result.comment.author == "#(article.user.nickname)") {
+                        newCommentNode.querySelector(".cl-comment-author-self").style.display = "inline-block";
+                    }
                     firstCommentNode.before(newCommentNode);
                     clCommentText.innerHTML = '';
                     clCommentText.classList.remove('cl-textplaceholder');
@@ -195,6 +199,25 @@
                 <input placeholder="请输入验证码" name="captcha">
                 <img class="vcode-img" src="/commons/captcha" onclick="this.src='#(CPATH)/commons/captcha?d='+Math.random();">
                 #end
+            </div>
+            <!-- 评论模板 -->
+            <div id="commentTemplate" class="comment-panel" style="display: none">
+                <div class="comment-panel-portrait">
+                    <img src="" alt="">
+                </div>
+                <div class="comment-panel-content">
+                    <div class="comment-panel-content-main">
+                    </div>
+                    <div class="comment-panel-content-item">
+                        <span class="cl-comment-author"></span>
+                        <span class="cl-comment-author-self" style="display: none">作者</span>
+                        <span class="cl-comment-date">
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            <span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
             </div>
             #commentPage()
             #for(comment : commentPage.list)
