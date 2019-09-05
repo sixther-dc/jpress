@@ -219,7 +219,7 @@
                     </div>
                 </div>
             </div>
-            #commentPage()
+            #commentPage(pageSize=100);
             #for(comment : commentPage.list)
             <div class="comment-panel"  value="#(comment.content)" userid="#(comment.user_id)">
                 <div class="comment-panel-portrait">
