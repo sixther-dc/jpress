@@ -132,12 +132,14 @@ a:hover img {
 .cl-artical-img {
     width: 192px;
     min-width: 192px;
+    height: 128px;
     margin-right: 16px;
 }
 .cl-article-box-item img {
     width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 5px;
+    object-fit:cover;
 }
 
 .cl-article-brief-info {
