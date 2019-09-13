@@ -1,0 +1,55 @@
+<style>
+    .cl-performance-table {
+        width: 95%;
+        height: 20px;
+    }
+</style>
+<div class="cl-performance-table"></div>
+<div>缓存处理时间: 1ms</div>
+<div>dns解析时间: 0ms</div>
+<div>资源请求时间: 678ms</div>
+<div>dom解析时间: 45ms</div>
+<div>load事件处理时间: 3mx</div>
+
+
+<script>
+    if (window.performance || window.webkitPerformance) {
+        var perf = window.performance || window.webkitPerformance;
+        var timing = perf.timing;
+        var perfEle = document.querySelector(".cl-performance-table");
+        var colorTable = {
+            cache: "#FF9999",
+            dns:'#99CC99',
+            request:'#FFCC33',
+            domhandle:'#99CCFF',
+            onload:'#FF99CC',
+        }
+        var timer = setInterval(function () {
+            if( timing.loadEventEnd !==0) {
+                clearInterval(timer);
+                var data = {
+                    cache: timing.domainLookupStart - timing.navigationStart,
+                    dns :timing.domainLookupEnd - timing.domainLookupStart,
+                    request : timing.responseEnd -timing.connectEnd,
+                    domhandle : timing.domComplete - timing.domLoading,
+                    total: timing.loadEventEnd -  timing.navigationStart
+                };
+                // 此处应该为百分比
+                data = {
+                    cache: 5,
+                    dns: 10,
+                    request: 6,
+                    domhandle: 4,
+                };
+                console.log(data);
+                var iStr = "linear-gradient(to right,";
+                ['cache', 'dns', 'request', 'domhandle'].forEach(function (item) {
+                    iStr += colorTable[item] + ' 0,' + colorTable[item] + ' ' + data[item] + ','
+                })
+                iStr = iStr.replace(/,$/, '');
+                iStr += ')';
+                perfEle.style.background = iStr;
+            }
+        })
+    }
+</script>
